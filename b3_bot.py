@@ -66,13 +66,13 @@ class B3SimulatorBot:
             EC.element_to_be_clickable((By.XPATH, '//*[@id="symbolSelect"]/div'))
         )
         caixa.click()
-        time.sleep(0.2)
+        time.sleep(0.5)
         input_real = caixa.find_element(By.TAG_NAME, "input")
         input_real.clear()
         input_real.send_keys(ativo)
-        time.sleep(0.2)
+        time.sleep(0.5)
         input_real.send_keys(Keys.ENTER)
-        time.sleep(0.3)
+        time.sleep(0.5)
 
     def _preencher_quantidade_compra(self, qtd):
         campo = WebDriverWait(self.driver, 5).until(
@@ -244,5 +244,6 @@ class B3SimulatorBot:
             yield {"type": "log", "message": f"Erro fatal: {str(e)}", "level": "error"}
         finally:
             self.close_driver()
+
 
 
