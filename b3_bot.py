@@ -24,14 +24,6 @@ class B3SimulatorBot:
         # Suppress logging
         chrome_options.add_argument("--log-level=3")
         
-        # Required for Docker/Server environments
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--disable-software-rasterizer")
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument("--disable-setuid-sandbox")
-        
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     def close_driver(self):
@@ -72,30 +64,49 @@ class B3SimulatorBot:
         input_real.send_keys(ativo)
         time.sleep(0.5)
         input_real.send_keys(Keys.ENTER)
-        time.sleep(0.5)
+        time.sleep(0.8)
 
     def _preencher_quantidade_compra(self, qtd):
-        campo = WebDriverWait(self.driver, 5).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="qtd_buy"]'))
-        )
-        campo.click()
-        campo.clear()
-        campo.send_keys(str(qtd))
-        time.sleep(0.1)
-        campo.send_keys(Keys.TAB)
-        time.sleep(0.1)
+        time.sleep(0.5)
+        try:
+            campo = WebDriverWait(self.driver, 8).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="qtd_buy"]'))
+            )
+            # Try JavaScript first (more reliable in server environments)
+            self.driver.execute_script("arguments[0].value = arguments[1];", campo, str(qtd))
+            time.sleep(0.3)
+        except Exception as e:
+            # Fallback to normal method
+            campo = WebDriverWait(self.driver, 8).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="qtd_buy"]'))
+            )
+            campo.click()
+            time.sleep(0.2)
+            campo.clear()
+            campo.send_keys(str(qtd))
+            time.sleep(0.2)
 
     def _preencher_quantidade_venda(self, qtd):
-        div = WebDriverWait(self.driver, 5).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="divQtdSell"]'))
-        )
-        input_real = div.find_element(By.TAG_NAME, "input")
-        input_real.click()
-        input_real.clear()
-        input_real.send_keys(str(qtd))
-        time.sleep(0.1)
-        input_real.send_keys(Keys.TAB)
-        time.sleep(0.1)
+        time.sleep(0.5)
+        try:
+            div = WebDriverWait(self.driver, 8).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="divQtdSell"]'))
+            )
+            input_real = div.find_element(By.TAG_NAME, "input")
+            # Try JavaScript first (more reliable in server environments)
+            self.driver.execute_script("arguments[0].value = arguments[1];", input_real, str(qtd))
+            time.sleep(0.3)
+        except Exception as e:
+            # Fallback to normal method
+            div = WebDriverWait(self.driver, 8).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="divQtdSell"]'))
+            )
+            input_real = div.find_element(By.TAG_NAME, "input")
+            input_real.click()
+            time.sleep(0.2)
+            input_real.clear()
+            input_real.send_keys(str(qtd))
+            time.sleep(0.2)
 
     def _clicar_adicionar(self):
         xpaths = [
@@ -244,6 +255,3 @@ class B3SimulatorBot:
             yield {"type": "log", "message": f"Erro fatal: {str(e)}", "level": "error"}
         finally:
             self.close_driver()
-
-
-
