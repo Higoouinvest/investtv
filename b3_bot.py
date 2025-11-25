@@ -24,6 +24,35 @@ class B3SimulatorBot:
         # Suppress logging
         chrome_options.add_argument("--log-level=3")
         
+        # Required for Docker/Server environments
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-software-rasterizer")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-setuid-sandbox")
+        
+        # Memory optimization for low-resource environments
+        chrome_options.add_argument("--single-process")
+        chrome_options.add_argument("--disable-background-networking")
+        chrome_options.add_argument("--disable-default-apps")
+        chrome_options.add_argument("--disable-sync")
+        chrome_options.add_argument("--metrics-recording-only")
+        chrome_options.add_argument("--mute-audio")
+        chrome_options.add_argument("--no-first-run")
+        chrome_options.add_argument("--safebrowsing-disable-auto-update")
+        chrome_options.add_argument("--disable-background-timer-throttling")
+        chrome_options.add_argument("--disable-backgrounding-occluded-windows")
+        chrome_options.add_argument("--disable-breakpad")
+        chrome_options.add_argument("--disable-component-extensions-with-background-pages")
+        chrome_options.add_argument("--disable-features=TranslateUI,BlinkGenPropertyTrees")
+        chrome_options.add_argument("--disable-ipc-flooding-protection")
+        chrome_options.add_argument("--disable-renderer-backgrounding")
+        chrome_options.add_argument("--enable-features=NetworkService,NetworkServiceInProcess")
+        chrome_options.add_argument("--force-color-profile=srgb")
+        chrome_options.add_argument("--hide-scrollbars")
+        chrome_options.add_argument("--window-size=1920,1080")
+        
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     def close_driver(self):
