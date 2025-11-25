@@ -16,13 +16,21 @@ class B3SimulatorBot:
         self.headless = headless
         self.driver = None
 
-    def start_driver(self):
+       def start_driver(self):
         chrome_options = webdriver.ChromeOptions()
         if self.headless:
             chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--start-maximized")
         # Suppress logging
         chrome_options.add_argument("--log-level=3")
+        
+        # Required for Docker/Server environments
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-software-rasterizer")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-setuid-sandbox")
         
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
@@ -236,3 +244,4 @@ class B3SimulatorBot:
             yield {"type": "log", "message": f"Erro fatal: {str(e)}", "level": "error"}
         finally:
             self.close_driver()
+
