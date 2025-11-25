@@ -16,7 +16,7 @@ class B3SimulatorBot:
         self.headless = headless
         self.driver = None
 
-       def start_driver(self):
+    def start_driver(self):
         chrome_options = webdriver.ChromeOptions()
         if self.headless:
             chrome_options.add_argument("--headless=new")
@@ -244,4 +244,5 @@ class B3SimulatorBot:
             yield {"type": "log", "message": f"Erro fatal: {str(e)}", "level": "error"}
         finally:
             self.close_driver()
+
 
