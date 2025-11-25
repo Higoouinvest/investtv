@@ -33,7 +33,6 @@ class B3SimulatorBot:
         chrome_options.add_argument("--disable-setuid-sandbox")
         
         # Memory optimization for low-resource environments
-        chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--disable-background-networking")
         chrome_options.add_argument("--disable-default-apps")
         chrome_options.add_argument("--disable-sync")
